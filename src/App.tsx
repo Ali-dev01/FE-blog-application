@@ -1,25 +1,69 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Routes, Route, Outlet } from "react-router-dom";
+import MainLayout from "./layout";
+import NotFound from "./sections/auth/not-found";
+import GuestGuard from "./guards/guest-guard";
+import AuthGuard from "./guards/auth-guard";
+import Authentication from "./pages/auth-page";
+import Home from "./pages/home";
+import BlogDetails from "./pages/blog-details";
+import NewBlog from "./pages/new-blog";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Routes>
+      <Route
+        path="sign-up"
+        element={
+          <MainLayout>
+            <GuestGuard>
+              <Authentication />
+            </GuestGuard>
+          </MainLayout>
+        }
+      />
+      <Route
+        path="login"
+        element={
+          <MainLayout>
+            <GuestGuard>
+              <Authentication />
+            </GuestGuard>
+          </MainLayout>
+        }
+      />
+
+      <Route
+        path="/"
+        element={
+          <MainLayout>
+            <GuestGuard>
+              <Outlet />
+            </GuestGuard>
+          </MainLayout>
+        }
+      >
+        <Route index element={<Home />} />
+        <Route path=":postId" element={<BlogDetails />} />
+      </Route>
+
+      <Route
+        path="new-blog"
+        element={
+          <AuthGuard>
+            <NewBlog />
+          </AuthGuard>
+        }
+      />
+
+      <Route
+        path="*"
+        element={
+          <MainLayout>
+            <NotFound />
+          </MainLayout>
+        }
+      />
+    </Routes>
   );
 }
 
